@@ -3,6 +3,10 @@
 	<form class="convertform" action="/styler/convert/" method="post">
 		<ul>
 			<li>
+				<label for="src_prefix">Image src prefix</label>
+				<input type="text" name="src_prefix" id="src_prefix" value="{% if srcPrefix %}{{srcPrefix}}{% endif %}">
+			</li>
+			<li>
 				<label for="source_url">Choose your source from a URL</label>
 				<input type="text" name="source_url" id="source_url" value="{% if sourceURL %}{{sourceURL}}{% endif %}" alt="e.g. http://mydomain.com/myemail.html"/>
 			</li>
