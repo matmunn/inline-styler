@@ -25,7 +25,7 @@ class Conversion:
 
 	def perform(self,document,sourceHTML,sourceURL,srcPrefix):
 		aggregateCSS="";
-		if not srcPrefix.endswith('/'):
+		if len(srcPrefix) and not srcPrefix.endswith('/'):
 			srcPrefix = srcPrefix + '/'
 			
 		# retrieve CSS rel links from html pasted and aggregate into one string
