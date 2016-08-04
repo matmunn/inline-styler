@@ -41,11 +41,14 @@ def convert(request):
 	urllib._urlopener = MyURLopener()
 	sourceHTML=''
 	sourceURL=''
+	srcPrefix=''
 	
 	if request.POST.has_key('source'):
 		sourceHTML=request.POST['source']
 	if request.POST.has_key('source_url'):
 		sourceURL=request.POST['source_url'].strip()
+	if request.POST.has_key('src_prefix'):
+		srcPrefix=request.POST['src_prefix']
 	if request.POST.has_key('returnraw'):
 		outputTemplate='raw.html'
 	else:
@@ -58,28 +61,28 @@ def convert(request):
 				urlregexpt=re.compile('((https?):((//)|(\\\\))+[\w\d:#@%/;$()~_?\+-=\\\.&]*)')
 				#check for valid URL
 				if(not urlregexpt.match(sourceURL)):
-					return render_to_response(outputTemplate,{'sourceHTML':sourceHTML,'sourceURL':sourceURL,'error_message':'The source URL does not appear to be valid.'})
+					return render_to_response(outputTemplate,{'srcPrefix': srcPrefix, 'sourceHTML':sourceHTML,'sourceURL':sourceURL,'error_message':'The source URL does not appear to be valid.'})
 				#if valid URL attempt to download
 				try:
 					f=urllib.urlopen(sourceURL)
 					document = etree.HTML(f.read())
 				except:
-					return render_to_response(outputTemplate,{'sourceHTML':sourceHTML,'sourceURL':sourceURL,'error_message':'The source URL could not be accessed.'})
+					return render_to_response(outputTemplate,{'srcPrefix': srcPrefix, 'sourceHTML':sourceHTML,'sourceURL':sourceURL,'error_message':'The source URL could not be accessed.'})
 			else:
 				try:
 					document = etree.HTML(sourceHTML)
 				except:
-					return render_to_response(outputTemplate,{'sourceHTML':sourceHTML,'sourceURL':sourceURL,'error_message':'The source HTML does not appear to be valid.'})
+					return render_to_response(outputTemplate,{'srcPrefix': srcPrefix, 'sourceHTML':sourceHTML,'sourceURL':sourceURL,'error_message':'The source HTML does not appear to be valid.'})
 		except KeyError:
 			return HttpResponseRedirect("/")
 		
 		# do conversion
 		try:
 			converter=Conversion()
-			converter.perform(document,sourceHTML,sourceURL)
+			converter.perform(document,sourceHTML,sourceURL,srcPrefix)
 		except IOError:
-			return render_to_response(outputTemplate,{'sourceHTML':sourceHTML, 'sourceURL':sourceURL, 'error_message': str(sys.exc_info()[1])})
+			return render_to_response(outputTemplate,{'srcPrefix': srcPrefix, 'sourceHTML':sourceHTML, 'sourceURL':sourceURL, 'error_message': str(sys.exc_info()[1])})
 				
-		return render_to_response(outputTemplate,{'sourceHTML':sourceHTML,'sourceURL':sourceURL,'convertedHTML':converter.convertedHTML, 'warnings':converter.CSSErrors, 'support':converter.CSSUnsupportErrors,'supportPercentage':converter.supportPercentage})
+		return render_to_response(outputTemplate,{'srcPrefix': srcPrefix, 'sourceHTML':sourceHTML,'sourceURL':sourceURL,'convertedHTML':converter.convertedHTML, 'warnings':converter.CSSErrors, 'support':converter.CSSUnsupportErrors,'supportPercentage':converter.supportPercentage})
 	else:
 		return HttpResponseRedirect("/")

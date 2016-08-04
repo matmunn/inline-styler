@@ -11,6 +11,9 @@ from cssutils.script import csscombine
 from cssutils.script import CSSCapture
 from cssselect import CSSSelector, ExpressionError
 
+# Added requirement for BeautifulSoup
+from bs4 import BeautifulSoup
+
 from django.conf import settings
 
 class Conversion:
@@ -20,8 +23,10 @@ class Conversion:
 		self.supportPercentage=100
 		self.convertedHTML=""
 
-	def perform(self,document,sourceHTML,sourceURL):
+	def perform(self,document,sourceHTML,sourceURL,srcPrefix):
 		aggregateCSS="";
+		if len(srcPrefix) and not srcPrefix.endswith('/'):
+			srcPrefix = srcPrefix + '/'
 			
 		# retrieve CSS rel links from html pasted and aggregate into one string
 		CSSRelSelector = CSSSelector("link[rel=stylesheet],link[rel=StyleSheet],link[rel=STYLESHEET]")
@@ -60,6 +65,13 @@ class Conversion:
 		#convert tree back to plain text html
 		self.convertedHTML = etree.tostring(document, method="xml", pretty_print=True,encoding='UTF-8')
 		self.convertedHTML= self.convertedHTML.replace('&#13;', '') #tedious raw conversion of line breaks.
+
+		# We've inline styled the CSS, now do the HTML src tags
+		soup = BeautifulSoup(self.convertedHTML)
+		for img in soup.find_all("img"):
+			img['src'] = srcPrefix + img.get('src')
+
+		self.convertedHTML = str(soup)
 		
 		return self
 		
