@@ -71,6 +71,18 @@ class Conversion:
 		for img in soup.find_all("img"):
 			img['src'] = srcPrefix + img.get('src')
 
+		# Now we would like to set width and min-width on all our tables
+		for table in soup.find_all("table"):
+			if table.get('width') is not None:
+				width = table.get('width')
+				if not width.endswith('%'):
+					if table.get('style') is None:
+						style = ''
+					else:
+						style = table.get('style')
+					style = style + ';width:' + width + "px;min-width:" + width + "px;"
+					table['style'] = style
+
 		self.convertedHTML = str(soup)
 		
 		return self
