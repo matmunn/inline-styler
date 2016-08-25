@@ -56,7 +56,7 @@ class Conversion:
 		styledict = self.getView(document, aggregateCSS)
 		
 		#set inline style attribute if not one of the elements not worth styling
-		ignoreList=['html','head','title','meta','link','script']
+		ignoreList=['html','head','title','meta','link','script','unsubscribe','repeater','singleline','multiline','br','layout']
 		for element, style in styledict.items():
 			if element.tag not in ignoreList:
 				v = style.getCssText(separator=u'')
@@ -82,6 +82,24 @@ class Conversion:
 						style = table.get('style')
 					style = style + ';width:' + width + "px;min-width:" + width + "px;"
 					table['style'] = style
+
+		# Might as well go ahead and throw a style tag in the head for iOS fixes
+		if soup.html.head is None:
+			soup.html.insert(0, soup.new_tag('head'))
+		if soup.html.head.style is None:
+			soup.html.head.append(soup.new_tag('style', type="text/css"))
+		soup.html.head.style.append("""
+		a[href^="x-apple-data-detectors:"] {
+		    color: #fff;
+		    text-decoration: none;
+		}
+      	a[href^="tel"], a[href^="sms"] {
+	        text-decoration: none;
+	        color: #000000;
+	        pointer-events: none;
+        }
+		""")
+		# sys.exit(0)
 
 		self.convertedHTML = str(soup)
 		
