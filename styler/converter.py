@@ -77,11 +77,13 @@ class Conversion:
 				width = table.get('width')
 				if not width.endswith('%'):
 					if table.get('style') is None:
-						style = ''
+						style = []
 					else:
-						style = table.get('style')
-					style = style + ';width:' + width + "px;min-width:" + width + "px;"
-					table['style'] = style
+						style = table.get('style').split(';')
+					style = [x for x in style if x]
+					style.append("width:" + width + "px")
+					style.append("min-width:" + width + "px")
+					table['style'] = ';'.join(style)
 
 		# Might as well go ahead and throw a style tag in the head for iOS fixes
 		if soup.html.head is None:
