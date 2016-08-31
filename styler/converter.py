@@ -105,10 +105,11 @@ class Conversion:
 		for img in soup.find_all('img'):
 			if 'spacer.gif' in img.get('src'):
 				classes = img.get('class')
-				if 'w' in classes:
-					img.parent['width'] = img.get('width')
-				if 'h' in classes:
-					img.parent['height'] = img.get('height')
+				if classes is not None:
+					if 'w' in classes:
+						img.parent['width'] = img.get('width')
+					if 'h' in classes:
+						img.parent['height'] = img.get('height')
 
 		self.convertedHTML = str(soup)
 		
