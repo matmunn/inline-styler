@@ -81,7 +81,6 @@ class Conversion:
 					else:
 						style = table.get('style').split(';')
 					style = [x for x in style if x]
-					style.append("width:" + width + "px")
 					style.append("min-width:" + width + "px")
 					table['style'] = ';'.join(style)
 
