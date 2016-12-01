@@ -56,7 +56,7 @@ class Conversion:
 		styledict = self.getView(document, aggregateCSS)
 
 		#set inline style attribute if not one of the elements not worth styling
-		ignoreList=['html','head','title','meta','link','script','unsubscribe','repeater','singleline','multiline','br','layout']
+		ignoreList=['html','head','title','meta','link','script','repeater','singleline','multiline','br','layout']
 		for element, style in styledict.items():
 			if element.tag not in ignoreList:
 				v = style.getCssText(separator=u'')
@@ -89,16 +89,14 @@ class Conversion:
 			soup.html.insert(0, soup.new_tag('head'))
 		if soup.html.head.style is None:
 			soup.html.head.append(soup.new_tag('style', type="text/css"))
-		soup.html.head.style.append("""
-		a[href^="x-apple-data-detectors:"] {
-		    color: #000000;
-		    text-decoration: none;
-		}
-      	a[href^="tel"], a[href^="sms"] {
-	        text-decoration: none;
-	        color: #000000;
-        }
-		""")
+		soup.html.head.style.append("""a[href^="x-apple-data-detectors:"] {
+    color: #000000;
+    text-decoration: none;
+}
+a[href^="tel"], a[href^="sms"] {
+    color: #000000;
+    text-decoration: none;
+}""")
 
 		for img in soup.find_all('img'):
 			if 'spacer.gif' in img.get('src'):
