@@ -82,6 +82,7 @@ class Conversion:
 						style = table.get('style').split(';')
 					style = [x for x in style if x]
 					style.append("min-width:" + width + "px")
+					style.append("width:" + width + "px")
 					table['style'] = ';'.join(style)
 
 		# Might as well go ahead and throw a style tag in the head for iOS fixes
