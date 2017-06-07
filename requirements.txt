@@ -1,0 +1,4 @@
+cssutils>=0.8.10
+Django==1.4
+lxml>=3.4.0
+beautifulsoup4

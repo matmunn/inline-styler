@@ -2,8 +2,8 @@ from django.conf.urls.defaults import *
 from django.conf import settings
 
 urlpatterns = patterns('',
-	(r'^$', include('inline-styler.styler.urls')),
-	(r'^styler/', include('inline-styler.styler.urls')),
+	(r'^$', include('styler.urls')),
+	(r'^styler/', include('styler.urls')),
 )
 
 if settings.DEBUG:
