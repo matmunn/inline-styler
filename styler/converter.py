@@ -90,14 +90,16 @@ class Conversion:
 			soup.html.insert(0, soup.new_tag('head'))
 		if soup.html.head.style is None:
 			soup.html.head.append(soup.new_tag('style', type="text/css"))
-		soup.html.head.style.append("""a[href^="x-apple-data-detectors:"] {
+		soup.html.head.style.append("""
+			a[href^="x-apple-data-detectors:"] {
     color: #000000;
     text-decoration: none;
 }
-a[href^="tel"], a[href^="sms"] {
+a[href^="tel"], a[href^="sms"], a[href^="mailto"] {
     color: #000000;
     text-decoration: none;
-}""")
+}
+""")
 
 		for img in soup.find_all('img'):
 			if 'spacer.gif' in img.get('src'):
